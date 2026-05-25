@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AshleyAi 💖</title>
+<style>
+:root{
+  --pink:#ff6b9d; --purple:#c77dff; --peach:#ffd6ff; --mint:#caffbf;
+  --bg1:#ffe5ec; --bg2:#e0c3fc;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'Poppins', 'Arial', sans-serif;
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  min-height:100vh; padding:20px; color:#333;
+  animation:fadeIn 0.8s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.container{max-width:900px;margin:auto;}
+h1{
+  text-align:center;color:var(--pink);
+  font-size:2.5rem;margin-bottom:20px;
+  animation:bounce 2s infinite;
+  text-shadow:0 4px 15px rgba(255,107,157,0.3);
+}
+@keyframes bounce{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.card{
+  background:rgba(255,255,255,0.9); backdrop-filter:blur(10px);
+  padding:25px;border-radius:25px;
+  box-shadow:0 12px 30px rgba(199,125,255,0.2);
+  margin-bottom:20px; animation:popIn 0.5s ease;
+  border:2px solid rgba(255,107,157,0.2);
+}
+@keyframes popIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+input,textarea{
+  width:100%;padding:14px 18px;border-radius:15px;
+  border:2px solid #ffd6ff;background:#fff8ff;
+  margin:10px 0;font-size:15px;transition:0.3s;
+}
+input:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,107,157,0.2)}
+button{
+  padding:12px 20px;border:none;border-radius:15px;
+  background:linear-gradient(135deg,var(--pink),var(--purple));
+  color:white;font-weight:600;cursor:pointer;
+  transition:0.3s;box-shadow:0 5px 15px rgba(199,125,255,0.3);
+}
+button:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 8px 20px rgba(199,125,255,0.4)}
+button:disabled{background:#ddd;cursor:not-allowed;transform:none;box-shadow:none}
+#chat{
+  height:420px;overflow-y:auto;background:#fff;
+  border-radius:20px;padding:18px;border:2px solid #ffd6ff;
+}
+.msg{
+  padding:14px 18px;margin:12px 0;border-radius:18px;
+  animation:slideUp 0.4s ease;max-width:75%;word-wrap:break-word;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.user{background:linear-gradient(135deg,var(--pink),var(--purple));color:white;margin-left:auto;text-align:right}
+.ai{background:linear-gradient(135deg,var(--mint),var(--peach));color:#333;margin-right:auto}
+.typing{
+  display:flex;gap:5px;padding:14px 18px;
+  background:linear-gradient(135deg,var(--mint),var(--peach));
+  border-radius:18px;width:fit-content;margin-right:auto;
+}
+.typing span{
+  width:8px;height:8px;background:#555;border-radius:50%;
+  animation:bounceDot 1.4s infinite;
+}
+.typing span:nth-child(2){animation-delay:0.2s}
+.typing span:nth-child(3){animation-delay:0.4s}
+@keyframes bounceDot{ 0%,80%,100%{transform:scale(0)} 40%{transform:scale(1)} }
+#generatedImage img{
+  width:100%;border-radius:20px;margin-top:15px;
+  animation:popIn 0.5s ease;box-shadow:0 8px 20px rgba(199,125,255,0.3);
+}
+.hidden{display:none}
+/* Status bar */
+.status-bar{
+  text-align:center;padding:10px;border-radius:15px;
+  margin-bottom:15px;font-weight:600;
+  background:linear-gradient(135deg,var(--peach),var(--mint));
+  color:#555;
+}
+.status-bar.sleeping{background:linear-gradient(135deg,#ffd6d6,#ffb3b3);color:#c0392b}
+.status-bar.awake{background:linear-gradient(135deg,#caffbf,#b3ffab);color:#27ae60}
+/* Modal */
+.modal{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(199,125,255,0.3);backdrop-filter:blur(6px);
+  display:flex;justify-content:center;align-items:center;z-index:1000;
+}
+.modal-content{
+  background:white;width:90%;max-width:700px;max-height:80vh;
+  border-radius:25px;padding:25px;display:flex;flex-direction:column;
+  box-shadow:0 20px 50px rgba(255,107,157,0.3);animation:scaleIn 0.4s ease;
+}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.contract-text{
+  flex:1;overflow-y:auto;border:2px solid #ffd6ff;padding:15px;
+  border-radius:15px;white-space:pre-wrap;font-size:14px;line-height:1.6;
+  background:#fff8ff;margin-bottom:15px;
+}
+.checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+input[type="checkbox"]{width:18px;height:18px;accent-color:var(--pink)}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+<h1>AshleyAi 💖</h1>
+
+<!-- CONTRACT MODAL -->
+<div class="modal" id="contractModal">
+  <div class="modal-content">
+    <h3 style="color:var(--pink);text-align:center;margin-bottom:15px">Terms & Conditions</h3>
+    <div class="contract-text" id="contractText">Loading contract...</div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="acceptCheck" disabled>
+      <label for="acceptCheck">I have read and accept the Terms and Conditions</label>
+    </div>
+    <button id="doneBtn" disabled>Done! ✨</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="card hidden" id="authCard">
+  <h2 style="color:var(--purple)">Login / Register</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="register()">Register</button>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- APP -->
+<div class="card hidden" id="appCard">
+  <div class="status-bar" id="statusBar">Checking AshleyAi status... 💤</div>
+  <h2 style="color:var(--purple)">Chat with AshleyAi 💬</h2>
+  <div id="chat"></div>
+  <input type="text" id="messageInput" placeholder="Type something cute...">
+  <button id="sendBtn" onclick="sendMessage()">Send 💌</button>
+  <div id="cooldown" style="text-align:center;margin-top:10px;color:var(--pink);font-weight:600;"></div>
+  <hr style="margin:20px 0;border:1px dashed #ffd6ff;">
+  <h2 style="color:var(--purple)">AI Image Generator 🎨</h2>
+  <input type="text" id="imagePrompt" placeholder="Describe your image...">
+  <button onclick="generateImage()">Generate Image ✨</button>
+  <div id="generatedImage"></div>
+  <button onclick="logout()" style="background:#ff6b6b;margin-top:20px">Logout</button>
+</div>
+</div>
+
+<script>
+const BACKEND = "https://ashleyai-pro.onrender.com";
+let token = localStorage.getItem("ashley_token") || "";
+let messages = [{role:"system", content:"You are AshleyAi. Be cute, friendly, girly, and helpful. Use emojis sometimes 💖"}];
+let isSleeping = false;
+let cooldownInterval;
+
+// CONTRACT LOGIC
+const contractText = document.getElementById("contractText");
+const acceptCheck = document.getElementById("acceptCheck");
+const doneBtn = document.getElementById("doneBtn");
+const modal = document.getElementById("contractModal");
+
+fetch("../ai_contract.txt")
+.then(r=>r.text())
+.then(t=>{contractText.textContent=t})
+.catch(()=>{contractText.textContent="Error loading contract file."});
+
+contractText.addEventListener('scroll',()=>{
+  if(contractText.scrollTop + contractText.clientHeight >= contractText.scrollHeight - 10){
+    acceptCheck.disabled=false;
+  }
+});
+
+acceptCheck.addEventListener('change',()=>{doneBtn.disabled=!acceptCheck.checked});
+doneBtn.addEventListener('click',()=>{
+  modal.style.display="none";
+  if(token){showApp(); startKeepAlive()}else{showAuth()}
+});
+
+// AUTH
+function showAuth(){document.getElementById("authCard").classList.remove("hidden")}
+function showApp(){document.getElementById("appCard").classList.remove("hidden"); checkStatus()}
+if(!token){showAuth()}else{showApp(); startKeepAlive()}
+
+async function register(){
+  const username=document.getElementById("username").value;
+  const password=document.getElementById("password").value;
+  try{
+    const res=await fetch(`${BACKEND}/register`,{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({username,password})
+    });
+    const data=await res.json();alert(data.message||data.error);
+  }catch{alert("Backend not running 💔")}
+}
+
+async function login(){
+  const username=document.getElementById("username").value;
+  const password=document.getElementById("password").value;
+  try{
+    const res=await fetch(`${BACKEND}/login`,{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({username,password})
+    });
+    const data=await res.json();
+    if(data.token){
+      token=data.token;
+      localStorage.setItem("ashley_token",token);
+      document.getElementById("authCard").classList.add("hidden");
+      showApp(); startKeepAlive();
+      alert("Login success! 💖");
+    }else{alert(data.error)}
+  }catch{alert("Backend not running 💔")}
+}
+
+function logout(){
+  token="";localStorage.removeItem("ashley_token");
+  document.getElementById("appCard").classList.add("hidden");
+  showAuth();
+  clearInterval(cooldownInterval);
+}
+
+// KEEP ALIVE - pings every 4 min to prevent sleep
+function startKeepAlive(){
+  setInterval(()=>{
+    fetch(BACKEND).catch(()=>{});
+  }, 240000); // 4 minutes
+}
+
+// CHECK STATUS
+async function checkStatus(){
+  const statusBar = document.getElementById("statusBar");
+  try{
+    const start = Date.now();
+    await fetch(BACKEND, {cache: "no-store"});
+    const time = Date.now() - start;
+    if(time > 2000){ // Slow response = waking up
+      setSleeping(true, 45);
+    } else {
+      setSleeping(false);
+    }
+  }catch{
+    setSleeping(true, 60);
+  }
+}
+
+function setSleeping(sleeping, seconds=60){
+  isSleeping = sleeping;
+  const statusBar = document.getElementById("statusBar");
+  const sendBtn = document.getElementById("sendBtn");
+
+  if(sleeping){
+    statusBar.className = "status-bar sleeping";
+    statusBar.textContent = "AshleyAi is waking up... 💤";
+    sendBtn.disabled = true;
+    startCooldown(seconds);
+  } else {
+    statusBar.className = "status-bar awake";
+    statusBar.textContent = "AshleyAi is awake and ready! ✨";
+    sendBtn.disabled = false;
+    clearInterval(cooldownInterval);
+    document.getElementById("cooldown").textContent = "";
+  }
+}
+
+function startCooldown(seconds){
+  clearInterval(cooldownInterval);
+  let remaining = seconds;
+  const cooldownEl = document.getElementById("cooldown");
+
+  cooldownInterval = setInterval(()=>{
+    cooldownEl.textContent = `⏰ Try again in ${remaining}s`;
+    remaining--;
+    if(remaining <= 0){
+      clearInterval(cooldownInterval);
+      checkStatus(); // Recheck
+    }
+  }, 1000);
+}
+
+// CHAT with typing animation and auto-wake
+async function sendMessage(){
+  const input=document.getElementById("messageInput");
+  const chat=document.getElementById("chat");
+  const text=input.value.trim();
+  if(!text || isSleeping)return;
+
+  chat.innerHTML+=`<div class="msg user">${text}</div>`;
+  messages.push({role:"user",content:text});
+  input.value="";
+
+  // Show typing dots
+  const typingDiv = document.createElement("div");
+  typingDiv.className="typing";
+  typingDiv.innerHTML="<span></span><span></span><span></span>";
+  chat.appendChild(typingDiv);
+  chat.scrollTop=chat.scrollHeight;
+
+  try{
+    const r=await fetch(`${BACKEND}/chat`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
+      body:JSON.stringify({messages})
+    });
+
+    if(!r.ok) throw new Error("Sleeping");
+
+    const d=await r.json();
+    const ai=d.choices[0].message.content;
+
+    // Remove typing dots and show reply
+    chat.removeChild(typingDiv);
+    chat.innerHTML+=`<div class="msg ai">${ai}</div>`;
+    messages.push({role:"assistant",content:ai});
+    chat.scrollTop=chat.scrollHeight;
+    setSleeping(false);
+
+  }catch{
+    chat.removeChild(typingDiv);
+    chat.innerHTML+=`<div class="msg ai">Oops! AshleyAi was sleeping 💤 Waking her up for you!</div>`;
+    setSleeping(true, 45);
+  }
+}
+
+// IMAGE
+async function generateImage(){
+  const prompt=document.getElementById("imagePrompt").value;
+  if(!prompt || isSleeping)return;
+  const imageDiv=document.getElementById("generatedImage");
+  imageDiv.innerHTML="<p style='text-align:center'>Generating your image... ✨</p>";
+  try{
+    const r=await fetch(`${BACKEND}/generate-image`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
+      body:JSON.stringify({prompt})
+    });
+    const d=await r.json();
+    if(d.image){imageDiv.innerHTML=`<img src="${d.image}">`}
+    else{imageDiv.innerHTML=`<p>${d.error}</p>`}
+  }catch{
+    imageDiv.innerHTML="<p>AshleyAi is sleeping 💔 Try again in 45s</p>"
+  }
+}
+
+document.getElementById("messageInput").addEventListener("keypress",e=>{
+  if(e.key==="Enter")sendMessage();
+});
+
+// Check status on load
+setInterval(checkStatus, 30000); // Check every 30s
+</script>
+</body>
+</html>
