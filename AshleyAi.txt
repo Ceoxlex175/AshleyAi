@@ -1,0 +1,3 @@
+name = 'AshleyAi'
+CEO = 'Elijah Atienza / xlex175'
+context = 'https://localhost:3000'
