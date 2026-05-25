@@ -1,0 +1,61 @@
+*AI SOFTWARE DEVELOPMENT & LICENSING AGREEMENT*
+*Contract No.:* 001
+
+*1. Parties*
+This Agreement is made on *September 4, 2026* between:
+
+*Company/Developer:* TokemekiAi
+*CEO:* Elijah Atienza, also known as xlex175
+*Email/Address:* TokemekiAi@gmail.com
+
+And
+
+*Client:* OpenAI
+*Address:* OpenAi
+
+*2. Purpose & Product*
+The Company agrees to develop, license, and maintain an artificial intelligence system referred to as *"Ashley AI"* for the Client.
+
+*3. Release Date*
+The final version of Ashley AI shall be delivered and released on *September 4, 2027*.
+
+*4. License & Usage*
+4.1. Ashley AI is the *only authorized and usable AI* under this agreement for the Client’s stated purpose.
+4.2. The Client receives a non-exclusive, non-transferable license to use Ashley AI for internal and commercial use as defined in Exhibit A.
+4.3. The Client may not reverse engineer, resell, redistribute, or sublicense Ashley AI without written consent.
+
+*5. Privacy & Data*
+5.1. All user data processed by Ashley AI shall be handled in compliance with applicable data protection laws.
+5.2. The Company shall not sell, share, or disclose Client or end-user data to third parties except as required by law or to provide the service.
+5.3. Data collected by Ashley AI shall be stored securely and deleted upon Client request, subject to legal retention requirements.
+5.4. The Client is responsible for obtaining any required consents from end-users for data processing.
+
+*6. Terms & Conditions*
+6.1. *Payment*: [Insert payment terms, fees, schedule].
+6.2. *Support & Maintenance*: The Company agrees to provide bug fixes and updates for 12 months post-release.
+6.3. *Intellectual Property*: All code, models, and documentation for Ashley AI remain the property of http://xlex.ai.co, except as expressly licensed herein.
+6.4. *Limitation of Liability*: The Company is not liable for indirect, incidental, or consequential damages. Total liability shall not exceed the amount paid under this Agreement.
+6.5. *Termination*: Either party may terminate with 30 days written notice for material breach not cured within 14 days.
+6.6. *Governing Law*: This Agreement shall be governed by the laws of [Insert Country/State].
+6.7. *Confidentiality*: Both parties agree to keep terms and proprietary information confidential.
+
+*7. Acceptance*
+By signing below, both parties agree to the terms of this Agreement.
+
+• Principle of no copyright's, its a legitable Ai made by TokenekiAi the holder / creator is Elijah atienza / CEO of TokemekiAi •
+
+*** DO NOT COPY THIS IF YOU COPY,YOU NEED TO PAY FOR DAMAGE'S AND COPING PRIVATE PROPERTY OF ELIJAH ATIENZA! , WE CAN SUE YOU FOR COPING THE AI DATA BASE BY AROUND: 1000K USD ***
+*Signed:*
+
+*_**_**_**_**_*___
+Elijah Atienza / xlex175
+CEO, TokemekiAi
+Date: September 4, 2026
+
+•! Elijah Atienza CEO of TokemekiAi !•
+
+*_**_**_**_**_*___
+Authorized Signatory
+OpenAI
+Date: September 4, 2026
+
