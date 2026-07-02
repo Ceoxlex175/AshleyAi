@@ -162,7 +162,7 @@ const acceptCheck = document.getElementById("acceptCheck");
 const doneBtn = document.getElementById("doneBtn");
 const modal = document.getElementById("contractModal");
 
-fetch("../ai_contract.txt")
+fetch("https://raw.githubusercontent.com/Ceoxlex175/AshleyAi/main/ai_contract.txt")
 .then(r=>r.text())
 .then(t=>{contractText.textContent=t})
 .catch(()=>{contractText.textContent="Error loading contract file."});
