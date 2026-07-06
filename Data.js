@@ -11,3 +11,6 @@ function autosave() {
   }
   
 }
+function update() {
+  console.log(fetch("https://raw.github.com/Ceoxlex175/AshleyAi/ai_contract.txt"));
+}
