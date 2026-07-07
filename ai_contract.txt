@@ -1,17 +1,14 @@
 *AI SOFTWARE DEVELOPMENT & LICENSING AGREEMENT*
-*Contract No.:* 001
+*Contract No.:* #1
 
 *1. Parties*
 This Agreement is made on *September 4, 2026* between:
 
-*Company/Developer:* TokemekiAi
-*CEO:* Elijah Atienza, also known as xlex175
-*Email/Address:* TokemekiAi@gmail.com
-
-And
-
-*Client:* OpenAI
-*Address:* OpenAi
+*Company/Developer:* TokemekiAi,
+*CEO:* Elijah Atienza, also known as xlex175,
+*Email/Address:* tokemekiAi@gmail.com,
+*Client:* OpenAI,
+*Address:* OpenAi,
 
 *2. Purpose & Product*
 The Company agrees to develop, license, and maintain an artificial intelligence system referred to as *"Ashley AI"* for the Client.
