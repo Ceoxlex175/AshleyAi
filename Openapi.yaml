@@ -1,0 +1,229 @@
+openapi: 3.0.3
+info:
+  title: AshleyAi API
+  description: >
+    AshleyAi is a chatbot API server. Send it a message (optionally with
+    conversation history) and it replies using an underlying AI model.
+  version: 1.0.0
+  contact:
+    name: AshleyAi Support
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+
+tags:
+  - name: Chat
+    description: Conversational AI endpoints
+  - name: Sessions
+    description: Manage stored conversation sessions
+  - name: System
+    description: Health and meta endpoints
+
+paths:
+  /api/chat:
+    post:
+      tags: [Chat]
+      summary: Send a message to AshleyAi
+      description: >
+        Sends a user message to AshleyAi and returns the assistant's reply.
+        Optionally include a sessionId to continue a stored conversation, or
+        pass an explicit history array for a stateless call.
+      operationId: sendChatMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              basic:
+                value:
+                  message: "Hi Ashley, what can you help me with?"
+              withSession:
+                value:
+                  message: "Remind me what I just asked you."
+                  sessionId: "b3b3f5a0-1234-4a5b-9c9c-abcdef123456"
+              withSystemPrompt:
+                value:
+                  message: "Give me 3 marketing headline ideas."
+                  systemPrompt: "You are Ashley, an upbeat marketing copywriter."
+      responses:
+        '200':
+          description: Successful chat reply
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server or upstream AI provider error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/sessions/{sessionId}:
+    get:
+      tags: [Sessions]
+      summary: Get conversation history for a session
+      operationId: getSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '200':
+          description: Session found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags: [Sessions]
+      summary: Delete a session
+      operationId: deleteSession
+      parameters:
+        - $ref: '#/components/parameters/SessionId'
+      responses:
+        '204':
+          description: Session deleted
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/health:
+    get:
+      tags: [System]
+      summary: Health check
+      operationId: getHealth
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+components:
+  parameters:
+    SessionId:
+      name: sessionId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: The conversation session identifier
+
+  schemas:
+    ChatRequest:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+          description: The user's message to AshleyAi
+          example: "Hello Ashley!"
+        sessionId:
+          type: string
+          description: >
+            Optional. If provided, AshleyAi will load and append to the
+            stored conversation history for this session. If omitted, a new
+            sessionId is generated and returned.
+        history:
+          type: array
+          description: >
+            Optional explicit conversation history to use instead of a
+            stored session (stateless mode). Ignored if sessionId is set.
+          items:
+            $ref: '#/components/schemas/Message'
+        systemPrompt:
+          type: string
+          description: Optional custom system prompt overriding AshleyAi's default persona.
+        model:
+          type: string
+          description: Optional model override.
+          example: "claude-sonnet-4-6"
+        maxTokens:
+          type: integer
+          description: Optional max tokens for the reply.
+          default: 1024
+
+    ChatResponse:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        reply:
+          type: string
+          description: AshleyAi's reply text
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        usage:
+          type: object
+          properties:
+            inputTokens:
+              type: integer
+            outputTokens:
+              type: integer
+
+    Message:
+      type: object
+      required: [role, content]
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+
+    Session:
+      type: object
+      properties:
+        sessionId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        uptimeSeconds:
+          type: number
+        aiConfigured:
+          type: boolean
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: string
