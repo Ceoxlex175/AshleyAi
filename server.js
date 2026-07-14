@@ -1,101 +1,71 @@
-import express from "express";
-import OpenAI from "openai";
-import cors from "cors";
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+// server.js
+require('dotenv').config();
 
-dotenv.config();
+const path = require('path');
+const express = require('express');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+
+const chatRoutes = require('./routes/chat');
+
 const app = express();
-app.use(express.json());
-app.use(cors());
-
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || "change-this-to-something-random";
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// In-memory user store. Replace with Postgres/MongoDB for production
-let users = [];
+// --- Middleware ---
+app.use(cors());
+app.use(express.json({ limit: '1mb' }));
 
-// Middleware to check JWT
-function auth(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ error: "No token provided" });
-  try {
-    req.user = jwt.verify(token, JWT_SECRET);
-    next();
-  } catch {
-    res.status(401).json({ error: "Invalid token" });
-  }
-}
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 30, // 30 requests per minute per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'RateLimited', details: 'Too many requests, slow down.' },
+});
+app.use('/api/', limiter);
 
-// Health check
-app.get("/", (req, res) => {
-  res.send("AshleyAi backend is running");
+// --- OpenAPI spec + Swagger UI ---
+const openapiPath = path.join(__dirname, 'openapi.yaml');
+const openapiDocument = YAML.load(openapiPath);
+
+app.get('/openapi.json', (req, res) => res.json(openapiDocument));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
+
+// --- Routes ---
+app.use('/api', chatRoutes);
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptimeSeconds: process.uptime(),
+    aiConfigured: Boolean(process.env.ANTHROPIC_API_KEY),
+  });
 });
 
-// Register
-app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
-  if (!username ||!password) return res.status(400).json({ error: "Username and password required" });
-  if (users.find(u => u.username === username)) return res.status(400).json({ error: "User already exists" });
-
-  const hash = await bcrypt.hash(password, 10);
-  users.push({ username, password: hash, createdAt: new Date() });
-  res.json({ message: "Registered successfully" });
+app.get('/', (req, res) => {
+  res.type('text').send(
+    'AshleyAi server is running.\n' +
+      '- Chat endpoint: POST /api/chat\n' +
+      '- API docs: GET /docs\n' +
+      '- OpenAPI spec: GET /openapi.json\n'
+  );
 });
 
-// Login
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(u => u.username === username);
-  if (!user) return res.status(401).json({ error: "Invalid credentials" });
-
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(401).json({ error: "Invalid credentials" });
-
-  const token = jwt.sign({ username }, JWT_SECRET, { expiresIn: "7d" });
-  res.json({ token });
+// --- 404 handler ---
+app.use((req, res) => {
+  res.status(404).json({ error: 'NotFound', details: `No route for ${req.method} ${req.originalUrl}` });
 });
 
-// Chat endpoint
-app.post("/chat", auth, async (req, res) => {
-  try {
-    const { messages } = req.body;
-    if (!messages) return res.status(400).json({ error: "Messages required" });
-
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages,
-      temperature: 0.3,
-      max_tokens: 500
-    });
-
-    res.json(response);
-  } catch (err) {
-    console.error("OpenAI error:", err.message);
-    res.status(500).json({ error: "OpenAI request failed" });
-  }
+// --- Error handler ---
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'InternalServerError', details: err.message });
 });
 
-// Image generation endpoint
-app.post("/generate-image", auth, async (req, res) => {
-  try {
-    const { prompt } = req.body;
-    if (!prompt) return res.status(400).json({ error: "Prompt required" });
-
-    const response = await openai.images.generate({
-      model: "dall-e-3",
-      prompt,
-      n: 1,
-      size: "1024x1024"
-    });
-
-    res.json({ image: response.data[0].url });
-  } catch (err) {
-    console.error("Image error:", err.message);
-    res.status(500).json({ error: "Image generation failed" });
-  }
+app.listen(PORT, () => {
+  console.log(`AshleyAi server listening on http://localhost:${PORT}`);
+  console.log(`Swagger docs available at http://localhost:${PORT}/docs`);
 });
-
-app.listen(PORT, () => console.log(`AshleyAi backend running on http://localhost:${PORT}`));
